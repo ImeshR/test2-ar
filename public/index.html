@@ -1,41 +1,96 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
-    <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
-</head>
-
-<body style='margin : 0px; overflow: hidden;'>
-    <!-- <a-scene embedded arjs> -->
-    <!-- <a-marker preset="hiro"> -->
-    <!-- <a-image id="image" src="mario.png"  position="0 0 0" rotation="-90 0 0"></a-image> -->
-    <!-- <a-box position="-1 0.5 1" rotation="0 45 0" color="#4CC3D9"></a-box>
-            <a-sphere position="0 1.25 -1" radius="1.25" color="#EF2D5E"></a-sphere>
-            <a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-            <a-plane position="0 0 0" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane> -->
-    <!-- </a-marker> -->
-    <!-- <a-marker type="pattern" url="/pattern-carb.patt">
-            <a-gltf-model
-              src="/base.glb"
-              position="0 0 0"
-              scale="0.5 0.5 0.5"
-            ></a-gltf-model>
-          </a-marker>
-          
-        <a-entity camera></a-entity> -->
-    <a-scene embedded arjs>
-        <a-assets>
-            <a-asset-item id="tree-obj" src="asst.obj"></a-asset-item>
-        </a-assets>
-        <a-marker preset="hiro">
-            <a-entity obj-model="obj: #tree-obj;" material="src: texture.png" position="0 0 1" rotation="0 90 0"
-                scale="5 5 5">
+<!DOCTYPE html> 
+<html> 
+<head>     
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>     
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>     
+    <!-- Add script to create multiple student desks -->     
+    <script>         
+        // This function will run after the scene loads         
+        AFRAME.registerComponent('classroom', {             
+            init: function() {                 
+                // Create student desks in rows                 
+                const rows = 3;                 
+                const desksPerRow = 3;                 
+                // DRAMATICALLY SHIFTED starting position
+                const startX = 0;                 
+                const startZ = 0;                 
+                const spacingX = 1.0;                 
+                const spacingZ = 1.0;                                  
+                const scene = document.querySelector('a-marker');                                  
+                
+                // Create rows of desks                 
+                for (let row = 0; row < rows; row++) {                     
+                    for (let desk = 0; desk < desksPerRow; desk++) {                         
+                        // Calculate position - centered around origin                         
+                        const xPos = (startX - 1) + (desk * spacingX);                         
+                        const zPos = (startZ - 1) + (row * spacingZ);                                                  
+                        
+                        // Create and add the chair-table combination                   
+                        const studentDesk = document.createElement('a-entity');                         
+                        studentDesk.setAttribute('gltf-model', 'chair_table.glb');                         
+                        studentDesk.setAttribute('position', {x: xPos, y: 0, z: zPos});                         
+                        studentDesk.setAttribute('rotation', {x: 0, y: 90, z: 0});                         
+                        studentDesk.setAttribute('scale', {x: 0.4, y: 0.4, z: 0.4});                                                  
+                        
+                        scene.appendChild(studentDesk);                     
+                    }                 
+                }             
+            }         
+        });     
+    </script> 
+</head> 
+<body style='margin: 0; overflow: hidden;'>     
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">         
+        <a-marker preset="hiro" classroom>             
+            <!-- Floor - Positioned at the exact center -->             
+            <a-entity                  
+                gltf-model="floor3.glb"                  
+                position="0 -0.3 0"                  
+                rotation="0 0 0"                  
+                scale="4.1 2.5 2.1">             
+            </a-entity>                          
+            
+            <!-- Teacher's desk - Positioned relative to centered students -->             
+            <a-entity                  
+                gltf-model="teacher_desk.glb"                  
+                position="0 0 -3.0"                  
+                rotation="0 0 0"                  
+                scale="0.8 0.8 0.75">             
+            </a-entity>                          
+            
+            <!-- Teacher's chair -->             
+            <a-entity                  
+                gltf-model="teacher-chair.glb"                  
+                position="0 0.15 -3.7"                  
+                rotation="0 0 0"                  
+                scale="1.5 1.5 1.5">             
+            </a-entity>                          
+            
+            <!-- Mini cupboard -->             
+            <a-entity                  
+                gltf-model="mini-cupboard.glb"                  
+                position="2 0 -4.5"                  
+                rotation="0 90 0"                  
+                scale="0.25 0.25 0.25">             
             </a-entity>
-        </a-marker>
-        <a-entity camera></a-entity>
-    </a-scene>
-    <!-- </a-scene> -->
-</body>
-
+            
+            <!-- Whiteboard -->
+            <a-entity
+                gltf-model="whiteboard.glb"
+                position="0 0.5 -5.0"
+                rotation="0 90 0"
+                scale="0.13 0.13 0.13">
+            </a-entity>
+            
+            <!-- Vase on left side of teacher's desk -->
+            <a-entity                  
+                gltf-model="vas.glb"                  
+                position="-1.5 0.5 -3.0"                  
+                rotation="0 0 0"                  
+                scale="0.1 0.1 0.1">             
+            </a-entity>
+        </a-marker>         
+        <a-entity camera></a-entity>     
+    </a-scene> 
+</body> 
 </html>
